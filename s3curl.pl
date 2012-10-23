@@ -12,7 +12,7 @@
 # for the specific language governing permissions and limitations under the License.
 
 use strict;
-use POSIX;
+use HTTP::Date;
 
 # you might need to use CPAN to get these modules.
 # run perl -MCPAN -e "install <module>" to get them.
@@ -221,7 +221,7 @@ foreach (sort (keys %xamzHeaders)) {
     $xamzHeadersToSign .= "$_:$headerValue\n";
 }
 
-my $httpDate = POSIX::strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime );
+my $httpDate = time2str();
 my $stringToSign;
 
 if (defined($expires)) {
