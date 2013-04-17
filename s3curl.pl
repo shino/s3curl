@@ -60,9 +60,16 @@ my $endpoint;
 
 my $DOTFILENAME=".s3curl";
 my $EXECFILE=$FindBin::Bin;
+my $ENVDOTFILE = $ENV{S3CURL};
 my $LOCALDOTFILE = $EXECFILE . "/" . $DOTFILENAME;
 my $HOMEDOTFILE = $ENV{HOME} . "/" . $DOTFILENAME;
-my $DOTFILE = -f $LOCALDOTFILE? $LOCALDOTFILE : $HOMEDOTFILE;
+my $DOTFILE;
+if (!defined($ENVDOTFILE) || $ENVDOTFILE eq "" ){
+    $DOTFILE = -f $LOCALDOTFILE? $LOCALDOTFILE : $HOMEDOTFILE;
+} else {
+    $DOTFILE = $ENVDOTFILE;
+}
+
 
 if (-f $DOTFILE) {
     open(CONFIG, $DOTFILE) || die "can't open $DOTFILE: $!"; 
@@ -123,6 +130,8 @@ Usage $0 --id friendly-name (or AWSAccessKeyId) [options] -- [curl-options] [URL
  common curl options:
   -H 'x-amz-acl: public-read' another way of using canned ACLs
   -v                          verbose logging
+ environment variable:
+  S3CURL                      set dotfile path instead of standard .s3curl
 USAGE
 die $usage if $help || !defined $keyId;
 
