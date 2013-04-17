@@ -309,9 +309,9 @@ sub getResourceToSign {
     my ($host, $resourceToSignRef) = @_;
     for my $ep (@endpoints) {
         if ($host =~ /(.*)\.$ep/) { # vanity subdomain case
-            my $vanityBucket = $1;
+            my $vanityBucket = lc($1);
             $$resourceToSignRef = "/$vanityBucket".$$resourceToSignRef;
-            debug("vanity endpoint signing case");
+            debug("vanity endpoint signing case: " . $vanityBucket);
             return;
         }
         elsif ($host eq $ep) { 
