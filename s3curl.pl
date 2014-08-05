@@ -195,7 +195,7 @@ for (my $i=0; $i<@ARGV; $i++) {
             $resource = "/";
         }
         my @attributes = ();
-        for my $attribute ("acl", "location", "logging", "notification",
+        for my $attribute ("acl", "location", "logging", "notification", "delete",
             "partNumber", "policy", "requestPayment", "response-cache-control", 
             "response-content-disposition", "response-content-encoding", "response-content-language",
             "response-content-type", "response-expires", "torrent",
