@@ -166,7 +166,10 @@ if (defined $fileToPut or defined $createBucket or defined $copySourceObject) {
 my $resource;
 my $host;
 
+my $httpDate = time2str();
+
 my %xamzHeaders;
+$xamzHeaders{'x-amz-date'}=$httpDate;
 $xamzHeaders{'x-amz-acl'}=$acl if (defined $acl);
 $xamzHeaders{'x-amz-copy-source'}=$copySourceObject if (defined $copySourceObject);
 $xamzHeaders{'x-amz-copy-source-range'}="bytes=$copySourceRange" if (defined $copySourceRange);
@@ -192,7 +195,7 @@ for (my $i=0; $i<@ARGV; $i++) {
             $resource = "/";
         }
         my @attributes = ();
-        for my $attribute ("acl", "location", "logging", "notification",
+        for my $attribute ("acl", "location", "logging", "notification", "delete",
             "partNumber", "policy", "requestPayment", "response-cache-control", 
             "response-content-disposition", "response-content-encoding", "response-content-language",
             "response-content-type", "response-expires", "torrent",
@@ -238,7 +241,6 @@ foreach (sort (keys %xamzHeaders)) {
     $xamzHeadersToSign .= "$_:$headerValue\n";
 }
 
-my $httpDate = time2str();
 my $stringToSign;
 
 if (defined($expires)) {
@@ -248,7 +250,7 @@ if (defined($expires)) {
     debug("Expires: at $expires");
     $stringToSign = "$method\n$contentMD5\n$contentType\n$expires\n$xamzHeadersToSign$resource";
 } else {
-    $stringToSign = "$method\n$contentMD5\n$contentType\n$httpDate\n$xamzHeadersToSign$resource";
+    $stringToSign = "$method\n$contentMD5\n$contentType\n\n$xamzHeadersToSign$resource";
 }
 
 debug("StringToSign='" . $stringToSign . "'");
@@ -260,7 +262,7 @@ debug("signature='" . $signature. "'");
 
 my @args = ();
 unless (defined($expires)) {
-    push @args, ("-H", "Date: $httpDate");
+    push @args, ("-H", "x-amz-date: $httpDate");
     push @args, ("-H", "Authorization: AWS $keyId:$signature");
 }
 push @args, ("-H", "x-amz-acl: $acl") if (defined $acl);
