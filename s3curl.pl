@@ -268,7 +268,7 @@ unless (defined($expires)) {
 }
 push @args, ("-H", "x-amz-acl: $acl") if (defined $acl);
 push @args, ("-L");
-push @args, ("-H", "content-type: $contentType") if (length $contentType);
+push @args, ("-H", "Content-Type: $contentType") if (length $contentType);
 push @args, ("-H", "Content-MD5: $contentMD5") if (length $contentMD5);
 push @args, ("-T", $fileToPut) if (defined $fileToPut);
 push @args, ("-X", "DELETE") if (defined $doDelete);
